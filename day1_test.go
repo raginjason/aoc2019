@@ -28,6 +28,26 @@ func TestFuelCalc(t *testing.T) {
 	}
 }
 
+func TestComputeRecursiveFuel(t *testing.T) {
+	testCases := []struct {
+		mass int
+		want int
+	}{
+		{14, 2},
+		{1969, 966},
+		{100756, 50346},
+	}
+
+	for _, tc := range testCases {
+		t.Run(fmt.Sprintf("%d->%d", tc.mass, tc.want), func(t *testing.T) {
+			got := ComputeRecursiveFuel(tc.mass)
+			if tc.want != got {
+				t.Errorf("got %d; want %d", got, tc.want)
+			}
+		})
+	}
+}
+
 func TestFuelTotalCalc(t *testing.T) {
 	testCases := []struct {
 		list []int

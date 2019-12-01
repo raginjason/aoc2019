@@ -52,3 +52,9 @@ func day1() int {
 
 	return ComputeFuelTotal(masses, ComputeFuel)
 }
+
+func day1pt2() int {
+	masses := scanDay1File()
+
+	return ComputeFuelTotal(masses, ComputeRecursiveFuel)
+}
