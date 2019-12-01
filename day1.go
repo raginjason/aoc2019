@@ -11,7 +11,7 @@ func ComputeFuelTotal(masses []int, fn computeFuel) int {
 	sum := 0
 
 	for i := range masses {
-		sum += ComputeFuel(masses[i])
+		sum += fn(masses[i])
 	}
 
 	return sum
@@ -50,5 +50,5 @@ func scanDay1File() []int {
 func day1() int {
 	masses := scanDay1File()
 
-	return ComputeFuelTotal(masses)
+	return ComputeFuelTotal(masses, ComputeFuel)
 }

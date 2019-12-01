@@ -46,7 +46,7 @@ func TestFuelTotalCalc(t *testing.T) {
 
 		for _, tc := range testCases {
 			t.Run(fmt.Sprintf("%s->%d", name, tc.want), func(t *testing.T) {
-				got := ComputeFuelTotal(tc.list)
+				got := ComputeFuelTotal(tc.list, ComputeFuel)
 				if tc.want != got {
 					t.Errorf("got %d; want %d", got, tc.want)
 				}
