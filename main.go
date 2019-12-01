@@ -5,5 +5,6 @@ import (
 )
 
 func main() {
-	fmt.Printf("hello world")
+	day1 := day1()
+	fmt.Printf("Day 1 answer: %d\n", day1)
 }
