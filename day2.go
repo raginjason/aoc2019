@@ -73,3 +73,23 @@ func day2() int {
 
 	return res[0]
 }
+
+func day2pt2() int {
+	opCodes := scanDay2File()
+
+	for noun := 1; noun <= 99; noun++ {
+		for verb := 1; verb <= 99; verb++ {
+			newOpCodes := make([]int, len(opCodes))
+			copy(newOpCodes, opCodes)
+			newOpCodes[1] = noun
+			newOpCodes[2] = verb
+
+			res := GravityComputer(newOpCodes)
+
+			if res[0] == 19690720 {
+				return 100 * noun + verb
+			}
+		}
+	}
+	return 0
+}
