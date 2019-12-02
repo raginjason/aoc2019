@@ -2,6 +2,15 @@ name: Go
 on: [push]
 jobs:
 
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Run GolangCI-Lint
+      uses: actions-contrib/golangci-lint@master
+      args: run
+
   test:
     name: Test
     runs-on: ubuntu-latest
