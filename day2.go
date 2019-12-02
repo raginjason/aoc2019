@@ -1,5 +1,13 @@
 package main
 
+import (
+	"encoding/csv"
+	"io"
+	"log"
+	"strconv"
+	"strings"
+)
+
 func GravityComputer(opCodes []int) []int {
 	skip := 0
 	for i, op := range opCodes {
@@ -22,4 +30,46 @@ func GravityComputer(opCodes []int) []int {
 		}
 	}
 	return opCodes
+}
+
+func scanDay2File() []int {
+	lines, err := FileInput(2)
+	if err != nil {
+		log.Fatalf("failed to get data, %s", err)
+	}
+
+	var opCodes []int
+
+	for _, line := range lines {
+		r := csv.NewReader(strings.NewReader(line))
+		for {
+			record, err := r.Read()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				log.Fatal(err)
+			}
+			for _, opCode := range record {
+				num, err := strconv.Atoi(opCode)
+				if err != nil {
+					log.Fatalf("could not convert %s, %s\n", opCode, err)
+				}
+				opCodes = append(opCodes, num)
+			}
+		}
+	}
+	return opCodes
+}
+
+func day2() int {
+	opCodes := scanDay2File()
+
+	// replace position 1 with the value 12 and replace position 2 with the value 2
+	opCodes[1] = 12
+	opCodes[2] = 2
+
+	res := GravityComputer(opCodes)
+
+	return res[0]
 }
