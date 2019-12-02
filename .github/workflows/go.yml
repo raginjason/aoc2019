@@ -7,9 +7,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v1
+
     - name: Run GolangCI-Lint
       uses: actions-contrib/golangci-lint@master
-      args: run
+      with:
+        args: run
 
   test:
     name: Test
