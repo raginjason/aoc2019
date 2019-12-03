@@ -118,7 +118,7 @@ func CalculateIntersection(a, b Segment) Point {
 }
 
 func ComputeSegments(input []string) []Segment {
-	segs := make([]Segment, len(input), len(input))
+	segs := make([]Segment, len(input))
 
 	seg := Segment{begin: Point{0, 0}}
 	for i, path := range input {
