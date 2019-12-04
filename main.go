@@ -17,6 +17,8 @@ func main() {
 
 	day3 := day3()
 	fmt.Printf("Day 3 answer: %d\n", day3)
+	day3pt2 := day3pt2()
+	fmt.Printf("Day 3 part 2 answer: %d\n", day3pt2)
 
 	day4 := day4()
 	fmt.Printf("Day 4 answer: %d\n", day4)

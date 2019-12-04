@@ -11,8 +11,9 @@ import (
 )
 
 type Point struct {
-	x int
-	y int
+	x             int
+	y             int
+	totalDistance int
 }
 
 func (p Point) String() string {
@@ -49,6 +50,7 @@ func (s Segment) intersect(b Segment) Point {
 	if minX <= verticalSeg.begin.x && verticalSeg.begin.x <= maxX && minY <= horizontalSeg.begin.y && horizontalSeg.begin.y <= maxY {
 		p.x = verticalSeg.begin.x
 		p.y = horizontalSeg.begin.y
+		p.totalDistance = verticalSeg.begin.totalDistance + horizontalSeg.begin.totalDistance + Abs(verticalSeg.begin.y-p.y) + Abs(horizontalSeg.begin.x-p.x)
 	}
 	return p
 }
@@ -78,11 +80,11 @@ func (s Segment) String() string {
 	return fmt.Sprintf("%s-%s", s.begin, s.end)
 }
 
-func CrossedWires(inputA []string, inputB []string) int {
+func FindIntersections(inputA []string, inputB []string) []Point {
 
 	aSegments := ComputeSegments(inputA)
 	bSegments := ComputeSegments(inputB)
-	zeroPoint := Point{0, 0}
+	zeroPoint := Point{0, 0, 0}
 	intersections := make([]Point, 0)
 
 	for _, aSeg := range aSegments {
@@ -93,6 +95,13 @@ func CrossedWires(inputA []string, inputB []string) int {
 			}
 		}
 	}
+
+	return intersections
+}
+
+func ClosestIntersection(inputA []string, inputB []string) int {
+
+	intersections := FindIntersections(inputA, inputB)
 
 	closestDistance := 1<<(bits.UintSize-1) - 1 // Set to something big
 	for _, intersection := range intersections {
@@ -105,13 +114,27 @@ func CrossedWires(inputA []string, inputB []string) int {
 	return closestDistance
 }
 
+func ShortestIntersections(inputA []string, inputB []string) int {
+
+	intersections := FindIntersections(inputA, inputB)
+
+	shortestDistance := 1<<(bits.UintSize-1) - 1 // Set to something big
+	for _, intersection := range intersections {
+		if intersection.totalDistance < shortestDistance {
+			shortestDistance = intersection.totalDistance
+		}
+	}
+
+	return shortestDistance
+}
+
 func CalculateIntersection(a, b Segment) Point {
 	if a.vertical && b.vertical { // Segments are parallel
-		return Point{0, 0}
+		return Point{0, 0, 0}
 	}
 
 	if a.horizontal && b.horizontal { // Segments are parallel
-		return Point{0, 0}
+		return Point{0, 0, 0}
 	}
 
 	return a.intersect(b)
@@ -120,7 +143,7 @@ func CalculateIntersection(a, b Segment) Point {
 func ComputeSegments(input []string) []Segment {
 	segs := make([]Segment, len(input))
 
-	seg := Segment{begin: Point{0, 0}}
+	seg := Segment{begin: Point{0, 0, 0}}
 	for i, path := range input {
 
 		dir := string(path[0])
@@ -131,18 +154,22 @@ func ComputeSegments(input []string) []Segment {
 
 		switch dir {
 		case "U": // +y
+			seg.end.totalDistance = seg.begin.totalDistance + distance
 			seg.end.y = seg.begin.y + distance
 			seg.end.x = seg.begin.x
 			seg.vertical = true
 		case "D": // -y
+			seg.end.totalDistance = seg.begin.totalDistance + distance
 			seg.end.y = seg.begin.y - distance
 			seg.end.x = seg.begin.x
 			seg.vertical = true
 		case "L": // -x
+			seg.end.totalDistance = seg.begin.totalDistance + distance
 			seg.end.x = seg.begin.x - distance
 			seg.end.y = seg.begin.y
 			seg.horizontal = true
 		case "R": // +x
+			seg.end.totalDistance = seg.begin.totalDistance + distance
 			seg.end.x = seg.begin.x + distance
 			seg.end.y = seg.begin.y
 			seg.horizontal = true
@@ -153,6 +180,7 @@ func ComputeSegments(input []string) []Segment {
 		// Reset for next iteration after adding to segs
 		seg.begin.x = seg.end.x
 		seg.begin.y = seg.end.y
+		seg.begin.totalDistance = seg.end.totalDistance
 		seg.vertical = false
 		seg.horizontal = false
 	}
@@ -186,7 +214,15 @@ func scanDay3File() [][]string {
 func day3() int {
 	paths := scanDay3File()
 
-	res := CrossedWires(paths[0], paths[1])
+	res := ClosestIntersection(paths[0], paths[1])
+
+	return res
+}
+
+func day3pt2() int {
+	paths := scanDay3File()
+
+	res := ShortestIntersections(paths[0], paths[1])
 
 	return res
 }
