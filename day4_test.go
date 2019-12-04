@@ -69,3 +69,27 @@ func TestSixDigitPassword(t *testing.T) {
 		})
 	}
 }
+
+func TestLargerGroupAdjacentDigitPassword(t *testing.T) {
+	testCases := []struct {
+		input int
+		want  bool
+	}{
+		{112233, true},
+		{123444, false},
+		{111122, true},
+
+		{122345, true},
+		{111111, false},
+		{123789, false},
+	}
+
+	for _, tc := range testCases {
+		t.Run(fmt.Sprintf("->%d", tc.input), func(t *testing.T) {
+			got := LargerGroupAdjacentDigitPassword(tc.input)
+			if diff := cmp.Diff(tc.want, got); diff != "" {
+				t.Errorf("-want +got:\n%s", diff)
+			}
+		})
+	}
+}

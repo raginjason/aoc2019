@@ -48,10 +48,46 @@ func SixDigitPassword(pass int) bool {
 	return true
 }
 
+// Clever or stupid? I'm not sure
+var excessAdjacentDigits = [40]string{
+	"000000", "111111", "222222", "333333", "444444", "555555", "666666", "777777", "888888", "999999",
+	"00000", "11111", "22222", "33333", "44444", "55555", "66666", "77777", "88888", "99999",
+	"0000", "1111", "2222", "3333", "4444", "5555", "6666", "7777", "8888", "9999",
+	"000", "111", "222", "333", "444", "555", "666", "777", "888", "999",
+}
+
+func LargerGroupAdjacentDigitPassword(pass int) bool {
+	passStr := strconv.Itoa(pass)
+
+	for _, digits := range excessAdjacentDigits {
+		// Removing digits could false positives, such as the case of 566655 -> 555
+		// Because of this, replace with a space instead of "" just to be safe
+		passStr = strings.Replace(passStr, digits, " ", -1)
+	}
+
+	for _, digits := range adjacentDigits {
+		if strings.Contains(passStr, digits) {
+			return true
+		}
+	}
+
+	return false
+}
+
 func SecretContainer(begin, end int) int {
 	passwords := make([]int, 0)
 	for i := begin + 1; i < end; i = i + 1 {
 		if SixDigitPassword(i) && CheckAdjacentDigitPassword(i) && NonDecreasingDigitPassword(i) {
+			passwords = append(passwords, i)
+		}
+	}
+	return len(passwords)
+}
+
+func BetterSecretContainer(begin, end int) int {
+	passwords := make([]int, 0)
+	for i := begin + 1; i < end; i = i + 1 {
+		if SixDigitPassword(i) && CheckAdjacentDigitPassword(i) && NonDecreasingDigitPassword(i) && LargerGroupAdjacentDigitPassword(i) {
 			passwords = append(passwords, i)
 		}
 	}
@@ -93,6 +129,14 @@ func day4() int {
 	passRange := scanDay4File()
 
 	res := SecretContainer(passRange[0], passRange[1])
+
+	return res
+}
+
+func day4pt2() int {
+	passRange := scanDay4File()
+
+	res := BetterSecretContainer(passRange[0], passRange[1])
 
 	return res
 }
