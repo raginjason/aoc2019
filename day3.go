@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/csv"
 	"fmt"
+	"github.com/raginjason/aoc2019/util"
 	"io"
 	"log"
 	"math/bits"
@@ -188,7 +189,7 @@ func ComputeSegments(input []string) []Segment {
 }
 
 func scanDay3File() [][]string {
-	lines, err := FileInput(3)
+	lines, err := util.FileInput(3)
 	if err != nil {
 		log.Fatalf("failed to get data, %s", err)
 	}

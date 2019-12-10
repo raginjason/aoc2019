@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/raginjason/aoc2019/util"
 	"log"
 	"strconv"
 )
@@ -30,7 +31,7 @@ func ComputeRecursiveFuel(mass int) int {
 }
 
 func scanDay1File() []int {
-	lines, err := FileInput(1)
+	lines, err := util.FileInput(1)
 	if err != nil {
 		log.Fatalf("failed to get data, %s", err)
 	}

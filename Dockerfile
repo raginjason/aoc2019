@@ -13,7 +13,7 @@ RUN go mod download && go mod verify
 
 # Copy rest of application in place and build
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -o main ./...
+RUN CGO_ENABLED=0 GOOS=linux go build -o main github.com/raginjason/aoc2019
 RUN go test -v ./...
 
 # Bare minimum container

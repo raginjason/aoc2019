@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/csv"
+	"github.com/raginjason/aoc2019/util"
 	"io"
 	"log"
 	"strconv"
@@ -95,7 +96,7 @@ func BetterSecretContainer(begin, end int) int {
 }
 
 func scanDay4File() []int {
-	lines, err := FileInput(4)
+	lines, err := util.FileInput(4)
 	if err != nil {
 		log.Fatalf("failed to get data, %s", err)
 	}

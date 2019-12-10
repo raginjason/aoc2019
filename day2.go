@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/csv"
+	"github.com/raginjason/aoc2019/util"
 	"io"
 	"log"
 	"strconv"
@@ -33,7 +34,7 @@ func GravityComputer(opCodes []int) []int {
 }
 
 func scanDay2File() []int {
-	lines, err := FileInput(2)
+	lines, err := util.FileInput(2)
 	if err != nil {
 		log.Fatalf("failed to get data, %s", err)
 	}
@@ -87,7 +88,7 @@ func day2pt2() int {
 			res := GravityComputer(newOpCodes)
 
 			if res[0] == 19690720 {
-				return 100 * noun + verb
+				return 100*noun + verb
 			}
 		}
 	}
