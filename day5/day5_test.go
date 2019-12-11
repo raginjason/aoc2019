@@ -1,7 +1,6 @@
 package day5
 
 import (
-	"fmt"
 	"github.com/google/go-cmp/cmp"
 	"testing"
 )
@@ -20,7 +19,7 @@ func TestInputOutput(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		t.Run(fmt.Sprintf("%s", tc.initialProgram), func(t *testing.T) {
+		t.Run(tc.initialProgram.String(), func(t *testing.T) {
 			c := NewComputer(tc.inputData, tc.initialProgram)
 			got := c.Run()
 
@@ -49,7 +48,7 @@ func TestPositionMode(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		t.Run(fmt.Sprintf("%s", tc.initialProgram), func(t *testing.T) {
+		t.Run(tc.initialProgram.String(), func(t *testing.T) {
 			c := NewComputer(tc.inputData, tc.initialProgram)
 			got := c.Run()
 
@@ -76,7 +75,7 @@ func TestImmediateMode(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		t.Run(fmt.Sprintf("%s", tc.initialProgram), func(t *testing.T) {
+		t.Run(tc.initialProgram.String(), func(t *testing.T) {
 			c := NewComputer(tc.inputData, tc.initialProgram)
 			got := c.Run()
 
