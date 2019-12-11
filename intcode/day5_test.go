@@ -20,8 +20,24 @@ func TestInputOutput(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.initialProgram.String(), func(t *testing.T) {
-			c := NewComputer(tc.inputData, tc.initialProgram)
-			got := c.Run()
+			in := make(chan int)
+			out := make(chan int)
+			c := NewComputer(in, tc.initialProgram, out)
+			go c.Run()
+
+			for _, v := range tc.inputData {
+				in <- v
+			}
+
+			var got []int
+			for {
+				val, ok := <-out
+				if ok == false {
+					break
+				} else {
+					got = append(got, val)
+				}
+			}
 
 			if diff := cmp.Diff(tc.wantOutput, got); diff != "" {
 				t.Errorf("-want +got:\n%s", diff)
@@ -49,12 +65,8 @@ func TestPositionMode(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.initialProgram.String(), func(t *testing.T) {
-			c := NewComputer(tc.inputData, tc.initialProgram)
-			got := c.Run()
-
-			if diff := cmp.Diff(tc.wantOutput, got); diff != "" {
-				t.Errorf("-want +got:\n%s", diff)
-			}
+			c := NewComputer(nil, tc.initialProgram, nil)
+			c.Run()
 
 			if diff := cmp.Diff(tc.finalProgram, c.Program); diff != "" {
 				t.Errorf("-want +got:\n%s", diff)
@@ -76,12 +88,8 @@ func TestImmediateMode(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.initialProgram.String(), func(t *testing.T) {
-			c := NewComputer(tc.inputData, tc.initialProgram)
-			got := c.Run()
-
-			if diff := cmp.Diff(tc.wantOutput, got); diff != "" {
-				t.Errorf("-want +got:\n%s", diff)
-			}
+			c := NewComputer(nil, tc.initialProgram, nil)
+			c.Run()
 
 			if diff := cmp.Diff(tc.finalProgram, c.Program); diff != "" {
 				t.Errorf("-want +got:\n%s", diff)
@@ -109,8 +117,24 @@ func TestEqual(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.program.String(), func(t *testing.T) {
-			c := NewComputer(tc.inputData, tc.program)
-			got := c.Run()
+			in := make(chan int)
+			out := make(chan int)
+			c := NewComputer(in, tc.program, out)
+			go c.Run()
+
+			for _, v := range tc.inputData {
+				in <- v
+			}
+
+			var got []int
+			for {
+				val, ok := <-out
+				if ok == false {
+					break
+				} else {
+					got = append(got, val)
+				}
+			}
 
 			if diff := cmp.Diff(tc.wantOutput, got); diff != "" {
 				t.Errorf("-want +got:\n%s", diff)
@@ -138,8 +162,24 @@ func TestLessThan(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.program.String(), func(t *testing.T) {
-			c := NewComputer(tc.inputData, tc.program)
-			got := c.Run()
+			in := make(chan int)
+			out := make(chan int)
+			c := NewComputer(in, tc.program, out)
+			go c.Run()
+
+			for _, v := range tc.inputData {
+				in <- v
+			}
+
+			var got []int
+			for {
+				val, ok := <-out
+				if ok == false {
+					break
+				} else {
+					got = append(got, val)
+				}
+			}
 
 			if diff := cmp.Diff(tc.wantOutput, got); diff != "" {
 				t.Errorf("-want +got:\n%s", diff)
@@ -183,8 +223,24 @@ func TestJump(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.program.String(), func(t *testing.T) {
-			c := NewComputer(tc.inputData, tc.program)
-			got := c.Run()
+			in := make(chan int)
+			out := make(chan int)
+			c := NewComputer(in, tc.program, out)
+			go c.Run()
+
+			for _, v := range tc.inputData {
+				in <- v
+			}
+
+			var got []int
+			for {
+				val, ok := <-out
+				if ok == false {
+					break
+				} else {
+					got = append(got, val)
+				}
+			}
 
 			if diff := cmp.Diff(tc.wantOutput, got); diff != "" {
 				t.Errorf("-want +got:\n%s", diff)

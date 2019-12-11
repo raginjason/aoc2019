@@ -19,8 +19,21 @@ func TestGravityComputer(t *testing.T) {
 	for _, tc := range testCases {
 
 		t.Run(tc.initialProgram.String(), func(t *testing.T) {
-			c := NewComputer(nil, tc.initialProgram)
-			c.Run()
+			in := make(chan int)
+			out := make(chan int)
+			c := NewComputer(in, tc.initialProgram, out)
+			go c.Run()
+
+			var got []int
+			for {
+				val, ok := <-out
+				if ok == false {
+					break
+				} else {
+					got = append(got, val)
+				}
+			}
+
 			if diff := cmp.Diff(tc.finalProgram, c.Program); diff != "" {
 				t.Errorf("-want +got:\n%s", diff)
 			}

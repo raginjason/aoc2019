@@ -15,9 +15,23 @@ func Amplifier(origProg intcode.Program, signalSeq []int) int {
 		p := make(intcode.Program, len(origProg))
 		copy(p, origProg)
 
-		c := intcode.NewComputer([]int{phase, signal}, p)
-		o := c.Run()
-		signal = o[0]
+		in := make(chan int)
+		out := make(chan int)
+		c := intcode.NewComputer(in, p, out)
+		go c.Run()
+		in <- phase
+		in <- signal
+
+		var output []int
+		for {
+			val, ok := <-out
+			if ok == false {
+				break
+			} else {
+				output = append(output, val)
+			}
+		}
+		signal = output[0]
 	}
 
 	return signal

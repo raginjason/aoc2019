@@ -20,25 +20,30 @@ func (p Program) String() string {
 type Program []int
 
 type Computer struct {
-	inputData []int
-	Program   Program
-	outputs   []int
+	input              chan int
+	Program            Program
+	InstructionPointer int
+	output             chan int
 }
 
-func NewComputer(input []int, program []int) *Computer {
+func NewComputer(input chan int, program []int, output chan int) *Computer {
 	c := new(Computer)
-	c.inputData = input
+	c.input = input
 	c.Program = program
+	c.output = output
 	return c
 }
 
-func (c *Computer) Run() []int {
+func (c *Computer) Run() {
 	inputCounter := 0
 	for i := 0; i < len(c.Program); {
 
 		op := c.Program[i]
 
 		if op == 99 { // Terminate
+			if c.output != nil {
+				close(c.output)
+			}
 			break
 		}
 
@@ -89,7 +94,7 @@ func (c *Computer) Run() []int {
 			 * example, the instruction 3,50 would take an input value and store it at address 50.
 			 */
 			outputAddress := c.Program[i+1]
-			c.Program[outputAddress] = c.inputData[inputCounter]
+			c.Program[outputAddress] = <-c.input
 			inputCounter = inputCounter + 1
 			i = i + 2
 		case 4:
@@ -105,7 +110,7 @@ func (c *Computer) Run() []int {
 				outputValue = c.Program[c.Program[i+1]] // Position mode
 			}
 
-			c.outputs = append(c.outputs, outputValue)
+			c.output <- outputValue
 			i = i + 2
 		case 5: // Jump-if-true
 			/*
@@ -217,7 +222,6 @@ func (c *Computer) Run() []int {
 			i = i + 1
 		}
 	}
-	return c.outputs
 }
 
 func splitInt(i int) []int {
