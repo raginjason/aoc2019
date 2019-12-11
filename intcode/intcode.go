@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func (p program) String() string {
+func (p Program) String() string {
 	var strs []string
 	for _, num := range p {
 		s := strconv.Itoa(num)
@@ -17,11 +17,11 @@ func (p program) String() string {
 	return strings.Join(strs, "-")
 }
 
-type program []int
+type Program []int
 
 type Computer struct {
 	inputData []int
-	Program   program
+	Program   Program
 	outputs   []int
 }
 
@@ -234,8 +234,8 @@ func splitInt(i int) []int {
 	return ints
 }
 
-func ParseIntCode(reader io.Reader) program {
-	var program = make(program, 0)
+func ParseIntCode(reader io.Reader) Program {
+	var program = make(Program, 0)
 
 	r := csv.NewReader(reader)
 	for {
