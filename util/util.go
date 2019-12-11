@@ -2,7 +2,6 @@ package util
 
 import (
 	"bufio"
-	"io"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -32,15 +31,7 @@ func FileInput(day int) ([]string, error) {
 	return lines, err
 }
 
-// FileInputReader grab input data for a given day and return a reader
-func FileInputReader(day int) (io.Reader, error) {
-	filename := filepath.Join(baseDir, strconv.Itoa(day), "input")
-
-	fh, err := os.Open(filename)
-	if err != nil {
-		return nil, err
-	}
-	defer fh.Close()
-
-	return fh, err
+// InputFilePath grab input data for a given day and return a path
+func InputFilePath(day int) string {
+	return filepath.Join(baseDir, strconv.Itoa(day), "input")
 }
