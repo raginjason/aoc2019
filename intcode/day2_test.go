@@ -24,13 +24,9 @@ func TestGravityComputer(t *testing.T) {
 			c := NewComputer(in, tc.initialProgram, out)
 			go c.Run()
 
-			var got []int
 			for {
-				val, ok := <-out
-				if ok == false {
+				if _, ok := <-out; !ok {
 					break
-				} else {
-					got = append(got, val)
 				}
 			}
 

@@ -31,7 +31,7 @@ func Part1() int {
 	var output []int
 	for {
 		val, ok := <-out
-		if ok == false {
+		if !ok {
 			break
 		} else {
 			output = append(output, val)
@@ -52,7 +52,7 @@ func Part2() int {
 	var output []int
 	for {
 		val, ok := <-out
-		if ok == false {
+		if !ok {
 			break
 		} else {
 			output = append(output, val)

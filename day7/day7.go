@@ -9,32 +9,102 @@ import (
 
 func Amplifier(origProg intcode.Program, signalSeq []int) int {
 
-	var signal int
-
-	for _, phase := range signalSeq {
-		p := make(intcode.Program, len(origProg))
-		copy(p, origProg)
-
-		in := make(chan int)
-		out := make(chan int)
-		c := intcode.NewComputer(in, p, out)
-		go c.Run()
-		in <- phase
-		in <- signal
-
-		var output []int
-		for {
-			val, ok := <-out
-			if ok == false {
-				break
-			} else {
-				output = append(output, val)
-			}
-		}
-		signal = output[0]
+	// Number of amplifiers (5) + 1
+	channels := []chan int{
+		make(chan int, 100),
+		make(chan int, 100),
+		make(chan int, 100),
+		make(chan int, 100),
+		make(chan int, 100),
+		make(chan int, 100),
 	}
 
-	return signal
+	var amplifiers []*intcode.Computer
+	for i := range signalSeq {
+		p := make(intcode.Program, len(origProg))
+		copy(p, origProg)
+		c := intcode.NewComputer(channels[i], p, channels[i+1])
+		c.Name = string(65 + i) // 65 = A, 66 = B, etc
+		amplifiers = append(amplifiers, c)
+	}
+
+	// Fire up amplifiers
+	for i := len(amplifiers) - 1; i >= 0; i-- {
+		go amplifiers[i].Run()
+	}
+
+	// Set signal sequence on each amplifier
+	for i, phase := range signalSeq {
+		channels[i] <- phase
+	}
+
+	firstChan := channels[0]
+	lastChan := channels[len(channels)-1]
+
+	// Seed first channel with signal of 0
+	firstChan <- 0
+
+	var output []int
+	for {
+		val, ok := <-lastChan
+		if !ok {
+			break
+		} else {
+			output = append(output, val)
+		}
+	}
+
+	return output[0]
+}
+
+func FeedbackAmplifier(origProg intcode.Program, signalSeq []int) int {
+
+	// Number of amplifiers (5) + 1
+	channels := []chan int{
+		make(chan int, 100), // main <-> A
+		make(chan int, 100), // A <-> B
+		make(chan int, 100), // B <-> C
+		make(chan int, 100), // C <-> D
+		make(chan int, 100), // D <-> E
+		make(chan int, 100), // E <-> main
+	}
+
+	var amplifiers []*intcode.Computer
+	for i := range signalSeq {
+		p := make(intcode.Program, len(origProg))
+		copy(p, origProg)
+		c := intcode.NewComputer(channels[i], p, channels[i+1])
+		c.Name = string(65 + i) // 65 = A, 66 = B, etc
+		amplifiers = append(amplifiers, c)
+	}
+
+	// Fire up amplifiers
+	for i := len(amplifiers) - 1; i >= 0; i-- {
+		go amplifiers[i].Run()
+	}
+
+	// Set signal sequence on each amplifier
+	for i, phase := range signalSeq {
+		channels[i] <- phase
+	}
+
+	firstChan := channels[0]
+	lastChan := channels[len(channels)-1]
+
+	// Seed first channel with signal of 0
+	firstChan <- 0
+
+	var lastSignal int
+	for {
+		if signal, ok := <-lastChan; ok {
+			lastSignal = signal
+			firstChan <- signal
+		} else { // This should handle opcode 99
+			break
+		}
+	}
+
+	return lastSignal
 }
 
 func permutation(xs []int) (permuts [][]int) {
@@ -70,6 +140,21 @@ func MaxSignal(p intcode.Program) int {
 	return maxSignal
 }
 
+func MaxFeedbackSignal(p intcode.Program) int {
+
+	signals := permutation([]int{5, 6, 7, 8, 9})
+
+	var maxSignal int
+	for _, s := range signals {
+		signal := FeedbackAmplifier(p, s)
+		if signal > maxSignal {
+			maxSignal = signal
+		}
+	}
+
+	return maxSignal
+}
+
 func scanDay7File() []int {
 	fh, err := os.Open(util.InputFilePath(7))
 	if err != nil {
@@ -88,4 +173,12 @@ func Part1() int {
 	maxSignal := MaxSignal(program)
 
 	return maxSignal
+}
+
+func Part2() int {
+	program := scanDay7File()
+
+	maxFeedbackSignal := MaxFeedbackSignal(program)
+
+	return maxFeedbackSignal
 }

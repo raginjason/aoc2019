@@ -24,6 +24,7 @@ type Computer struct {
 	Program            Program
 	InstructionPointer int
 	output             chan int
+	Name               string
 }
 
 func NewComputer(input chan int, program []int, output chan int) *Computer {
@@ -31,6 +32,7 @@ func NewComputer(input chan int, program []int, output chan int) *Computer {
 	c.input = input
 	c.Program = program
 	c.output = output
+	c.Name = "default"
 	return c
 }
 
@@ -94,7 +96,11 @@ func (c *Computer) Run() {
 			 * example, the instruction 3,50 would take an input value and store it at address 50.
 			 */
 			outputAddress := c.Program[i+1]
-			c.Program[outputAddress] = <-c.input
+
+			if val, ok := <-c.input; ok {
+				c.Program[outputAddress] = val
+			}
+
 			inputCounter = inputCounter + 1
 			i = i + 2
 		case 4:
