@@ -35,13 +35,10 @@ func NewComputer(input []int, program []int) *Computer {
 }
 
 func (c *Computer) Run() []int {
-	skip := 0
 	inputCounter := 0
-	for i, op := range c.program {
-		if skip > 1 {
-			skip = skip - 1
-			continue
-		}
+	for i := 0; i < len(c.program); {
+
+		op := c.program[i]
 
 		if op == 99 { // Terminate
 			break
@@ -68,7 +65,7 @@ func (c *Computer) Run() []int {
 
 			outputAddress := c.program[i+3]
 			c.program[outputAddress] = input1Value + input2Value
-			skip = 4
+			i = i + 4
 		case 2: // Multiply
 			var input1Value int
 			var input2Value int
@@ -87,7 +84,7 @@ func (c *Computer) Run() []int {
 
 			outputAddress := c.program[i+3]
 			c.program[outputAddress] = input1Value * input2Value
-			skip = 4
+			i = i + 4
 		case 3:
 			/*
 			 * Opcode 3 takes a single integer as input and saves it to the position given by its only parameter. For
@@ -96,7 +93,7 @@ func (c *Computer) Run() []int {
 			outputAddress := c.program[i+1]
 			c.program[outputAddress] = c.inputData[inputCounter]
 			inputCounter = inputCounter + 1
-			skip = 2
+			i = i + 2
 		case 4:
 			/*
 			 * Opcode 4 outputs the value of its only parameter. For example, the instruction 4,50 would output the
@@ -104,9 +101,9 @@ func (c *Computer) Run() []int {
 			 */
 			outputAddress := c.program[i+1]
 			c.outputs = append(c.outputs, c.program[outputAddress])
-			skip = 2
+			i = i + 2
 		default:
-			continue
+			i = i + 1
 		}
 	}
 	return c.outputs
