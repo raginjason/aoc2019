@@ -1,4 +1,4 @@
-package day5
+package intcode
 
 import (
 	"github.com/google/go-cmp/cmp"
