@@ -1,6 +1,11 @@
 package day7
 
-import "github.com/raginjason/aoc2019/intcode"
+import (
+	"github.com/raginjason/aoc2019/intcode"
+	"github.com/raginjason/aoc2019/util"
+	"log"
+	"os"
+)
 
 func Amplifier(origProg intcode.Program, signalSeq []int) int {
 
@@ -47,6 +52,26 @@ func MaxSignal(p intcode.Program) int {
 			maxSignal = signal
 		}
 	}
+
+	return maxSignal
+}
+
+func scanDay7File() []int {
+	fh, err := os.Open(util.InputFilePath(7))
+	if err != nil {
+		log.Fatalf("could not open file: %s", err)
+	}
+	defer fh.Close()
+
+	program := intcode.ParseIntCode(fh)
+
+	return program
+}
+
+func Part1() int {
+	program := scanDay7File()
+
+	maxSignal := MaxSignal(program)
 
 	return maxSignal
 }
