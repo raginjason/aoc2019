@@ -21,22 +21,22 @@ type program []int
 
 type Computer struct {
 	inputData []int
-	program   program
+	Program   program
 	outputs   []int
 }
 
 func NewComputer(input []int, program []int) *Computer {
 	c := new(Computer)
 	c.inputData = input
-	c.program = program
+	c.Program = program
 	return c
 }
 
 func (c *Computer) Run() []int {
 	inputCounter := 0
-	for i := 0; i < len(c.program); {
+	for i := 0; i < len(c.Program); {
 
-		op := c.program[i]
+		op := c.Program[i]
 
 		if op == 99 { // Terminate
 			break
@@ -50,46 +50,46 @@ func (c *Computer) Run() []int {
 			var input2Value int
 
 			if len(opCodeParts)-3 >= 0 && opCodeParts[len(opCodeParts)-3] == 1 {
-				input1Value = c.program[i+1] // Immediate mode
+				input1Value = c.Program[i+1] // Immediate mode
 			} else {
-				input1Value = c.program[c.program[i+1]] // Position mode
+				input1Value = c.Program[c.Program[i+1]] // Position mode
 			}
 
 			if len(opCodeParts)-4 >= 0 && opCodeParts[len(opCodeParts)-4] == 1 {
-				input2Value = c.program[i+2] // Immediate mode
+				input2Value = c.Program[i+2] // Immediate mode
 			} else {
-				input2Value = c.program[c.program[i+2]] // Position mode
+				input2Value = c.Program[c.Program[i+2]] // Position mode
 			}
 
-			outputAddress := c.program[i+3]
-			c.program[outputAddress] = input1Value + input2Value
+			outputAddress := c.Program[i+3]
+			c.Program[outputAddress] = input1Value + input2Value
 			i = i + 4
 		case 2: // Multiply
 			var input1Value int
 			var input2Value int
 
 			if len(opCodeParts)-3 >= 0 && opCodeParts[len(opCodeParts)-3] == 1 {
-				input1Value = c.program[i+1] // Immediate mode
+				input1Value = c.Program[i+1] // Immediate mode
 			} else {
-				input1Value = c.program[c.program[i+1]] // Position mode
+				input1Value = c.Program[c.Program[i+1]] // Position mode
 			}
 
 			if len(opCodeParts)-4 >= 0 && opCodeParts[len(opCodeParts)-4] == 1 {
-				input2Value = c.program[i+2] // Immediate mode
+				input2Value = c.Program[i+2] // Immediate mode
 			} else {
-				input2Value = c.program[c.program[i+2]] // Position mode
+				input2Value = c.Program[c.Program[i+2]] // Position mode
 			}
 
-			outputAddress := c.program[i+3]
-			c.program[outputAddress] = input1Value * input2Value
+			outputAddress := c.Program[i+3]
+			c.Program[outputAddress] = input1Value * input2Value
 			i = i + 4
 		case 3:
 			/*
 			 * Opcode 3 takes a single integer as input and saves it to the position given by its only parameter. For
 			 * example, the instruction 3,50 would take an input value and store it at address 50.
 			 */
-			outputAddress := c.program[i+1]
-			c.program[outputAddress] = c.inputData[inputCounter]
+			outputAddress := c.Program[i+1]
+			c.Program[outputAddress] = c.inputData[inputCounter]
 			inputCounter = inputCounter + 1
 			i = i + 2
 		case 4:
@@ -100,9 +100,9 @@ func (c *Computer) Run() []int {
 			var outputValue int
 
 			if len(opCodeParts)-3 >= 0 && opCodeParts[len(opCodeParts)-3] == 1 {
-				outputValue = c.program[i+1] // Immediate mode
+				outputValue = c.Program[i+1] // Immediate mode
 			} else {
-				outputValue = c.program[c.program[i+1]] // Position mode
+				outputValue = c.Program[c.Program[i+1]] // Position mode
 			}
 
 			c.outputs = append(c.outputs, outputValue)
@@ -116,15 +116,15 @@ func (c *Computer) Run() []int {
 			var newPointer int
 
 			if len(opCodeParts)-3 >= 0 && opCodeParts[len(opCodeParts)-3] == 1 {
-				flag = c.program[i+1] // Immediate mode
+				flag = c.Program[i+1] // Immediate mode
 			} else {
-				flag = c.program[c.program[i+1]] // Position mode
+				flag = c.Program[c.Program[i+1]] // Position mode
 			}
 
 			if len(opCodeParts)-4 >= 0 && opCodeParts[len(opCodeParts)-4] == 1 {
-				newPointer = c.program[i+2] // Immediate mode
+				newPointer = c.Program[i+2] // Immediate mode
 			} else {
-				newPointer = c.program[c.program[i+2]] // Position mode
+				newPointer = c.Program[c.Program[i+2]] // Position mode
 			}
 
 			if flag != 0 {
@@ -141,15 +141,15 @@ func (c *Computer) Run() []int {
 			var newPointer int
 
 			if len(opCodeParts)-3 >= 0 && opCodeParts[len(opCodeParts)-3] == 1 {
-				flag = c.program[i+1] // Immediate mode
+				flag = c.Program[i+1] // Immediate mode
 			} else {
-				flag = c.program[c.program[i+1]] // Position mode
+				flag = c.Program[c.Program[i+1]] // Position mode
 			}
 
 			if len(opCodeParts)-4 >= 0 && opCodeParts[len(opCodeParts)-4] == 1 {
-				newPointer = c.program[i+2] // Immediate mode
+				newPointer = c.Program[i+2] // Immediate mode
 			} else {
-				newPointer = c.program[c.program[i+2]] // Position mode
+				newPointer = c.Program[c.Program[i+2]] // Position mode
 			}
 
 			if flag == 0 {
@@ -165,24 +165,24 @@ func (c *Computer) Run() []int {
 
 			var input1Value int
 			var input2Value int
-			outputAddress := c.program[i+3]
+			outputAddress := c.Program[i+3]
 
 			if len(opCodeParts)-3 >= 0 && opCodeParts[len(opCodeParts)-3] == 1 {
-				input1Value = c.program[i+1] // Immediate mode
+				input1Value = c.Program[i+1] // Immediate mode
 			} else {
-				input1Value = c.program[c.program[i+1]] // Position mode
+				input1Value = c.Program[c.Program[i+1]] // Position mode
 			}
 
 			if len(opCodeParts)-4 >= 0 && opCodeParts[len(opCodeParts)-4] == 1 {
-				input2Value = c.program[i+2] // Immediate mode
+				input2Value = c.Program[i+2] // Immediate mode
 			} else {
-				input2Value = c.program[c.program[i+2]] // Position mode
+				input2Value = c.Program[c.Program[i+2]] // Position mode
 			}
 
 			if input1Value < input2Value {
-				c.program[outputAddress] = 1
+				c.Program[outputAddress] = 1
 			} else {
-				c.program[outputAddress] = 0
+				c.Program[outputAddress] = 0
 			}
 			i = i + 4
 		case 8:
@@ -193,24 +193,24 @@ func (c *Computer) Run() []int {
 
 			var input1Value int
 			var input2Value int
-			outputAddress := c.program[i+3]
+			outputAddress := c.Program[i+3]
 
 			if len(opCodeParts)-3 >= 0 && opCodeParts[len(opCodeParts)-3] == 1 {
-				input1Value = c.program[i+1] // Immediate mode
+				input1Value = c.Program[i+1] // Immediate mode
 			} else {
-				input1Value = c.program[c.program[i+1]] // Position mode
+				input1Value = c.Program[c.Program[i+1]] // Position mode
 			}
 
 			if len(opCodeParts)-4 >= 0 && opCodeParts[len(opCodeParts)-4] == 1 {
-				input2Value = c.program[i+2] // Immediate mode
+				input2Value = c.Program[i+2] // Immediate mode
 			} else {
-				input2Value = c.program[c.program[i+2]] // Position mode
+				input2Value = c.Program[c.Program[i+2]] // Position mode
 			}
 
 			if input1Value == input2Value {
-				c.program[outputAddress] = 1
+				c.Program[outputAddress] = 1
 			} else {
-				c.program[outputAddress] = 0
+				c.Program[outputAddress] = 0
 			}
 			i = i + 4
 		default:

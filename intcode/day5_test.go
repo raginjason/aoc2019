@@ -27,7 +27,7 @@ func TestInputOutput(t *testing.T) {
 				t.Errorf("-want +got:\n%s", diff)
 			}
 
-			if diff := cmp.Diff(tc.finalProgram, c.program); diff != "" {
+			if diff := cmp.Diff(tc.finalProgram, c.Program); diff != "" {
 				t.Errorf("-want +got:\n%s", diff)
 			}
 		})
@@ -56,7 +56,7 @@ func TestPositionMode(t *testing.T) {
 				t.Errorf("-want +got:\n%s", diff)
 			}
 
-			if diff := cmp.Diff(tc.finalProgram, c.program); diff != "" {
+			if diff := cmp.Diff(tc.finalProgram, c.Program); diff != "" {
 				t.Errorf("-want +got:\n%s", diff)
 			}
 		})
@@ -83,7 +83,7 @@ func TestImmediateMode(t *testing.T) {
 				t.Errorf("-want +got:\n%s", diff)
 			}
 
-			if diff := cmp.Diff(tc.finalProgram, c.program); diff != "" {
+			if diff := cmp.Diff(tc.finalProgram, c.Program); diff != "" {
 				t.Errorf("-want +got:\n%s", diff)
 			}
 		})
