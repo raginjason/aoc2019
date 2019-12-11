@@ -99,9 +99,122 @@ func (c *Computer) Run() []int {
 			 * Opcode 4 outputs the value of its only parameter. For example, the instruction 4,50 would output the
 			 * value at address 50.
 			 */
-			outputAddress := c.program[i+1]
-			c.outputs = append(c.outputs, c.program[outputAddress])
+			var outputValue int
+
+			if len(opCodeParts)-3 >= 0 && opCodeParts[len(opCodeParts)-3] == 1 {
+				outputValue = c.program[i+1] // Immediate mode
+			} else {
+				outputValue = c.program[c.program[i+1]] // Position mode
+			}
+
+			c.outputs = append(c.outputs, outputValue)
 			i = i + 2
+		case 5: // Jump-if-true
+			/*
+			 * If the first parameter is non-zero, it sets the instruction pointer to the value from the second
+			 * parameter. Otherwise, it does nothing.
+			 */
+			var flag int
+			var newPointer int
+
+			if len(opCodeParts)-3 >= 0 && opCodeParts[len(opCodeParts)-3] == 1 {
+				flag = c.program[i+1] // Immediate mode
+			} else {
+				flag = c.program[c.program[i+1]] // Position mode
+			}
+
+			if len(opCodeParts)-4 >= 0 && opCodeParts[len(opCodeParts)-4] == 1 {
+				newPointer = c.program[i+2] // Immediate mode
+			} else {
+				newPointer = c.program[c.program[i+2]] // Position mode
+			}
+
+			if flag != 0 {
+				i = newPointer
+			} else {
+				i = i + 3
+			}
+		case 6: // Jump-if-false
+			/*
+			 * If the first parameter is zero, it sets the instruction pointer to the value from the second parameter.
+			 * Otherwise, it does nothing.
+			 */
+			var flag int
+			var newPointer int
+
+			if len(opCodeParts)-3 >= 0 && opCodeParts[len(opCodeParts)-3] == 1 {
+				flag = c.program[i+1] // Immediate mode
+			} else {
+				flag = c.program[c.program[i+1]] // Position mode
+			}
+
+			if len(opCodeParts)-4 >= 0 && opCodeParts[len(opCodeParts)-4] == 1 {
+				newPointer = c.program[i+2] // Immediate mode
+			} else {
+				newPointer = c.program[c.program[i+2]] // Position mode
+			}
+
+			if flag == 0 {
+				i = newPointer
+			} else {
+				i = i + 3
+			}
+		case 7: // Less than
+			/*
+			 * If the first parameter is less than the second parameter, it stores 1 in the position given by the third
+			 * parameter. Otherwise, it stores 0.
+			 */
+
+			var input1Value int
+			var input2Value int
+			outputAddress := c.program[i+3]
+
+			if len(opCodeParts)-3 >= 0 && opCodeParts[len(opCodeParts)-3] == 1 {
+				input1Value = c.program[i+1] // Immediate mode
+			} else {
+				input1Value = c.program[c.program[i+1]] // Position mode
+			}
+
+			if len(opCodeParts)-4 >= 0 && opCodeParts[len(opCodeParts)-4] == 1 {
+				input2Value = c.program[i+2] // Immediate mode
+			} else {
+				input2Value = c.program[c.program[i+2]] // Position mode
+			}
+
+			if input1Value < input2Value {
+				c.program[outputAddress] = 1
+			} else {
+				c.program[outputAddress] = 0
+			}
+			i = i + 4
+		case 8:
+			/*
+			 * Opcode 8 is equals: if the first parameter is equal to the second parameter, it stores 1 in the position
+			 * given by the third parameter. Otherwise, it stores 0.
+			 */
+
+			var input1Value int
+			var input2Value int
+			outputAddress := c.program[i+3]
+
+			if len(opCodeParts)-3 >= 0 && opCodeParts[len(opCodeParts)-3] == 1 {
+				input1Value = c.program[i+1] // Immediate mode
+			} else {
+				input1Value = c.program[c.program[i+1]] // Position mode
+			}
+
+			if len(opCodeParts)-4 >= 0 && opCodeParts[len(opCodeParts)-4] == 1 {
+				input2Value = c.program[i+2] // Immediate mode
+			} else {
+				input2Value = c.program[c.program[i+2]] // Position mode
+			}
+
+			if input1Value == input2Value {
+				c.program[outputAddress] = 1
+			} else {
+				c.program[outputAddress] = 0
+			}
+			i = i + 4
 		default:
 			i = i + 1
 		}
@@ -135,13 +248,22 @@ func scanDay5File() []int {
 	return program
 }
 
-func Day5() int {
+func Part1() int {
 	program := scanDay5File()
 
 	c := NewComputer([]int{1}, program)
 
 	output := c.Run()
 	return output[len(output)-1]
+}
+
+func Part2() int {
+	program := scanDay5File()
+
+	c := NewComputer([]int{5}, program)
+
+	output := c.Run()
+	return output[0]
 }
 
 func parseDay5Data(reader io.Reader) program {
