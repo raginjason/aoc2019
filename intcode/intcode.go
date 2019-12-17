@@ -46,6 +46,7 @@ func (c *Computer) Run() {
 			if c.output != nil {
 				close(c.output)
 			}
+			c.InstructionPointer++
 			break
 		}
 
@@ -227,6 +228,7 @@ func (c *Computer) Run() {
 		default:
 			i = i + 1
 		}
+		c.InstructionPointer = i
 	}
 }
 
