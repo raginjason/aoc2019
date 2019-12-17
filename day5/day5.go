@@ -22,17 +22,41 @@ func scanDay5File() []int {
 func Part1() int {
 	program := scanDay5File()
 
-	c := intcode.NewComputer([]int{1}, program)
+	in := make(chan int)
+	out := make(chan int)
+	c := intcode.NewComputer(in, program, out)
+	go c.Run()
+	in <- 1
 
-	output := c.Run()
+	var output []int
+	for {
+		val, ok := <-out
+		if !ok {
+			break
+		} else {
+			output = append(output, val)
+		}
+	}
 	return output[len(output)-1]
 }
 
 func Part2() int {
 	program := scanDay5File()
 
-	c := intcode.NewComputer([]int{5}, program)
+	in := make(chan int)
+	out := make(chan int)
+	c := intcode.NewComputer(in, program, out)
+	go c.Run()
+	in <- 5
 
-	output := c.Run()
+	var output []int
+	for {
+		val, ok := <-out
+		if !ok {
+			break
+		} else {
+			output = append(output, val)
+		}
+	}
 	return output[0]
 }
