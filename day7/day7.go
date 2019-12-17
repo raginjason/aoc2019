@@ -11,12 +11,12 @@ func Amplifier(origProg intcode.Program, signalSeq []int) int {
 
 	// Number of amplifiers (5) + 1
 	channels := []chan int{
-		make(chan int, 100),
-		make(chan int, 100),
-		make(chan int, 100),
-		make(chan int, 100),
-		make(chan int, 100),
-		make(chan int, 100),
+		make(chan int, 1),
+		make(chan int, 1),
+		make(chan int, 1),
+		make(chan int, 1),
+		make(chan int, 1),
+		make(chan int, 1),
 	}
 
 	var amplifiers []*intcode.Computer
@@ -61,12 +61,12 @@ func FeedbackAmplifier(origProg intcode.Program, signalSeq []int) int {
 
 	// Number of amplifiers (5) + 1
 	channels := []chan int{
-		make(chan int, 100), // main <-> A
-		make(chan int, 100), // A <-> B
-		make(chan int, 100), // B <-> C
-		make(chan int, 100), // C <-> D
-		make(chan int, 100), // D <-> E
-		make(chan int, 100), // E <-> main
+		make(chan int, 1), // main <-> A
+		make(chan int, 1), // A <-> B
+		make(chan int, 1), // B <-> C
+		make(chan int, 1), // C <-> D
+		make(chan int, 1), // D <-> E
+		make(chan int, 1), // E <-> main
 	}
 
 	var amplifiers []*intcode.Computer
