@@ -215,8 +215,6 @@ func (c *Computer) Run() {
 			var outputAddress int
 
 			switch ins.ParameterModes[0] {
-			case ImmediateMode:
-				outputAddress = c.Program[c.Program[i+1]]
 			case PositionMode: // zeroval
 				outputAddress = c.Program[i+1]
 			}

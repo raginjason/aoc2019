@@ -14,6 +14,9 @@ func TestAddition(t *testing.T) {
 		wantInstructionPointer int
 	}{
 		{"position-mode add", Program{1, 0, 0, 0, 99}, Program{2, 0, 0, 0, 99}, 5},
+		{"immediate-mode add A", Program{11101, 3, 4, 0, 99}, Program{7, 3, 4, 0, 99}, 5},
+		{"immediate-mode add B", Program{1101, 3, 4, 0, 99}, Program{7, 3, 4, 0, 99}, 5},
+		{"immediate-mode add C", Program{101, 3, 4, 0, 99}, Program{102, 3, 4, 0, 99}, 5},
 		{"store add post terminate", Program{1, 4, 4, 5, 99, 0}, Program{1, 4, 4, 5, 99, 198}, 5},
 	}
 
@@ -50,6 +53,9 @@ func TestMultiplication(t *testing.T) {
 		wantInstructionPointer int
 	}{
 		{"position-mode multiply", Program{2, 3, 0, 3, 99}, Program{2, 3, 0, 6, 99}, 5},
+		{"immediate-mode multiply A", Program{11102, 3, 4, 0, 99}, Program{12, 3, 4, 0, 99}, 5},
+		{"immediate-mode multiply B", Program{1102, 3, 4, 0, 99}, Program{12, 3, 4, 0, 99}, 5},
+		{"immediate-mode multiply C", Program{102, 3, 4, 0, 99}, Program{297, 3, 4, 0, 99}, 5},
 		{"store multiply post terminate", Program{2, 4, 4, 5, 99, 0}, Program{2, 4, 4, 5, 99, 9801}, 5},
 	}
 
@@ -192,8 +198,9 @@ func TestOutput(t *testing.T) {
 		wantOutput             []int
 		wantInstructionPointer int
 	}{
-		{"address 0", Program{4, 0, 99}, []int{4}, 3},
-		{"address 2", Program{4, 2, 99}, []int{99}, 3},
+		{"position-mode address 0", Program{4, 0, 99}, []int{4}, 3},
+		{"position-mode address 2", Program{4, 2, 99}, []int{99}, 3},
+		{"immediate-mode A", Program{104, 2, 99}, []int{2}, 3},
 		{"address beyond termination", Program{4, 3, 99, 23}, []int{23}, 3},
 	}
 
