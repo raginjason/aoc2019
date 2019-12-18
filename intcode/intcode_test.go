@@ -468,3 +468,31 @@ func TestLessThan(t *testing.T) {
 		})
 	}
 }
+
+func TestLargeNumber(t *testing.T) {
+	testCases := []struct {
+		program Program
+		want    int
+	}{
+		{Program{104, 1125899906842624, 99}, 1125899906842624},
+		{Program{1102, 34915192, 34915192, 7, 4, 7, 99, 0}, 1219070632396864},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.program.String(), func(t *testing.T) {
+			in := make(chan int)
+			out := make(chan int)
+			c := NewComputer(in, tc.program, out)
+			go c.Run()
+
+			var got int
+			if val, ok := <-out; ok {
+				got = val
+			}
+
+			if diff := cmp.Diff(tc.want, got); diff != "" {
+				t.Errorf("-want +got:\n%s", diff)
+			}
+		})
+	}
+}
