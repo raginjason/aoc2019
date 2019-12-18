@@ -151,7 +151,6 @@ func NewComputer(input chan int, program []int, output chan int) *Computer {
 }
 
 func (c *Computer) Run() {
-	inputCounter := 0
 	for i := 0; i < len(c.Program); {
 
 		op := c.Program[i]
@@ -226,7 +225,6 @@ func (c *Computer) Run() {
 				c.Program[outputAddress] = val
 			}
 
-			inputCounter = inputCounter + 1
 			i = i + 2
 		case Output:
 			/*
