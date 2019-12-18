@@ -150,20 +150,6 @@ func NewComputer(input chan int, program []int, output chan int) *Computer {
 	return c
 }
 
-func splitInt(i int) []int {
-	str := strconv.Itoa(i)
-	letters := strings.Split(str, "")
-	ints := []int{}
-	for _, i := range letters {
-		j, err := strconv.Atoi(i)
-		if err != nil {
-			log.Fatalf("could not convert %s to int", i)
-		}
-		ints = append(ints, j)
-	}
-	return ints
-}
-
 func (c *Computer) Run() {
 	inputCounter := 0
 	for i := 0; i < len(c.Program); {
