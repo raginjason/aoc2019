@@ -34,7 +34,7 @@ func TestAddition(t *testing.T) {
 				}
 			}
 
-			if diff := cmp.Diff(tc.wantProgram, c.Program); diff != "" {
+			if diff := cmp.Diff(tc.wantProgram, c.Program[0:len(tc.wantProgram)]); diff != "" {
 				t.Errorf("Program difference, -want +got:\n%s", diff)
 			}
 
@@ -73,7 +73,7 @@ func TestMultiplication(t *testing.T) {
 				}
 			}
 
-			if diff := cmp.Diff(tc.wantProgram, c.Program); diff != "" {
+			if diff := cmp.Diff(tc.wantProgram, c.Program[0:len(tc.wantProgram)]); diff != "" {
 				t.Errorf("Program difference, -want +got:\n%s", diff)
 			}
 
@@ -99,7 +99,7 @@ func TestAdditionMultiplication(t *testing.T) {
 			c := NewComputer(nil, tc.program, nil)
 			c.Run()
 
-			if diff := cmp.Diff(tc.wantProgram, c.Program); diff != "" {
+			if diff := cmp.Diff(tc.wantProgram, c.Program[0:len(tc.wantProgram)]); diff != "" {
 				t.Errorf("Program difference, -want +got:\n%s", diff)
 			}
 
@@ -136,7 +136,7 @@ func TestTerminate(t *testing.T) {
 				}
 			}
 
-			if diff := cmp.Diff(tc.wantProgram, c.Program); diff != "" {
+			if diff := cmp.Diff(tc.wantProgram, c.Program[0:len(tc.wantProgram)]); diff != "" {
 				t.Errorf("Program difference, -want +got:\n%s", diff)
 			}
 
@@ -180,7 +180,7 @@ func TestInput(t *testing.T) {
 				}
 			}
 
-			if diff := cmp.Diff(tc.wantProgram, c.Program); diff != "" {
+			if diff := cmp.Diff(tc.wantProgram, c.Program[0:len(tc.wantProgram)]); diff != "" {
 				t.Errorf("Program difference, -want +got:\n%s", diff)
 			}
 
@@ -272,7 +272,7 @@ func TestInputOutput(t *testing.T) {
 				t.Errorf("Output difference, -want +got:\n%s", diff)
 			}
 
-			if diff := cmp.Diff(tc.wantProgram, c.Program); diff != "" {
+			if diff := cmp.Diff(tc.wantProgram, c.Program[0:len(tc.wantProgram)]); diff != "" {
 				t.Errorf("Program difference, -want +got:\n%s", diff)
 			}
 
@@ -469,6 +469,43 @@ func TestLessThan(t *testing.T) {
 	}
 }
 
+func TestLargeMemory(t *testing.T) {
+	testCases := []struct {
+		inputData  []int
+		program    Program
+		wantOutput []int
+	}{
+		// Put stuff to addr 50+, then jump to 50
+		{[]int{4, 1, 99}, Program{3, 50, 3, 51, 3, 52, 1005, 1, 50, 99}, []int{50}},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.program.String(), func(t *testing.T) {
+			in := make(chan int, 1)
+			out := make(chan int, 1)
+			c := NewComputer(in, tc.program, out)
+			go c.Run()
+
+			for _, v := range tc.inputData {
+				in <- v
+			}
+
+			var got []int
+			for {
+				val, ok := <-out
+				if ok == false {
+					break
+				} else {
+					got = append(got, val)
+				}
+			}
+
+			if diff := cmp.Diff(tc.wantOutput, got); diff != "" {
+				t.Errorf("Output difference, -want +got:\n%s", diff)
+			}
+		})
+	}
+}
 func TestLargeNumber(t *testing.T) {
 	testCases := []struct {
 		program Program

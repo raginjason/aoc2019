@@ -144,7 +144,8 @@ type Computer struct {
 func NewComputer(input chan int, program []int, output chan int) *Computer {
 	c := new(Computer)
 	c.input = input
-	c.Program = program
+	c.Program = make([]int, 1000000)
+	copy(c.Program, program)
 	c.output = output
 	c.Name = "default"
 	return c
