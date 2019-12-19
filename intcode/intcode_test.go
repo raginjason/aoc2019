@@ -17,6 +17,12 @@ func TestAddition(t *testing.T) {
 		{"immediate-mode add A", Program{11101, 3, 4, 0, 99}, Program{7, 3, 4, 0, 99}, 5},
 		{"immediate-mode add B", Program{1101, 3, 4, 0, 99}, Program{7, 3, 4, 0, 99}, 5},
 		{"immediate-mode add C", Program{101, 3, 4, 0, 99}, Program{102, 3, 4, 0, 99}, 5},
+		{"relative-mode 0 add A", Program{22201, 0, 0, 0, 99}, Program{44402, 0, 0, 0, 99}, 5},
+		{"relative-mode 0 add B", Program{2201, 0, 0, 0, 99}, Program{4402, 0, 0, 0, 99}, 5},
+		{"relative-mode 0 add C", Program{201, 0, 0, 0, 99}, Program{402, 0, 0, 0, 99}, 5},
+		{"relative-mode 2 add A", Program{109, 2, 201, 0, 0, 0, 99}, Program{310, 2, 201, 0, 0, 0, 99}, 7},
+		{"relative-mode 2 add B", Program{109, 2, 2201, 0, 0, 0, 99}, Program{4402, 2, 2201, 0, 0, 0, 99}, 7},
+		{"relative-mode 2 add C", Program{109, 2, 22201, 0, 0, 0, 99}, Program{44402, 2, 22201, 0, 0, 0, 99}, 7},
 		{"store add post terminate", Program{1, 4, 4, 5, 99, 0}, Program{1, 4, 4, 5, 99, 198}, 5},
 	}
 
@@ -539,6 +545,38 @@ func TestRelativeBaseOffset(t *testing.T) {
 
 			if diff := cmp.Diff(tc.wantRelativeBase, c.RelativeBase); diff != "" {
 				t.Errorf("RelativeBase difference, -want +got:\n%s", diff)
+			}
+		})
+	}
+}
+
+func TestQuine(t *testing.T) {
+	testCases := []struct {
+		program    Program
+		wantOutput []int
+	}{
+		{Program{109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99}, []int{109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99}},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.program.String(), func(t *testing.T) {
+			in := make(chan int)
+			out := make(chan int)
+			c := NewComputer(in, tc.program, out)
+			go c.Run()
+
+			var got []int
+			for {
+				val, ok := <-out
+				if ok == false {
+					break
+				} else {
+					got = append(got, val)
+				}
+			}
+
+			if diff := cmp.Diff(tc.wantOutput, got); diff != "" {
+				t.Errorf("Output difference, -want +got:\n%s", diff)
 			}
 		})
 	}

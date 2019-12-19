@@ -13,14 +13,15 @@ type ParameterMode int
 const (
 	PositionMode ParameterMode = iota
 	ImmediateMode
+	RelativeMode
 )
 
 func (m ParameterMode) String() string {
-	if m < PositionMode || m > ImmediateMode {
+	if m < PositionMode || m > RelativeMode {
 		return "Unknown"
 	}
 
-	return [...]string{"Position", "Immediate"}[m]
+	return [...]string{"Position", "Immediate", "Relative"}[m]
 }
 
 type OpCode int
@@ -180,6 +181,8 @@ func (c *Computer) Run() {
 				input1Value = c.Program[i+1]
 			case PositionMode:
 				input1Value = c.Program[c.Program[i+1]]
+			case RelativeMode:
+				input1Value = c.Program[c.RelativeBase+c.Program[i+1]]
 			}
 
 			switch ins.ParameterModes[1] {
@@ -187,6 +190,8 @@ func (c *Computer) Run() {
 				input2Value = c.Program[i+2]
 			case PositionMode:
 				input2Value = c.Program[c.Program[i+2]]
+			case RelativeMode:
+				input2Value = c.Program[c.RelativeBase+c.Program[i+2]]
 			}
 
 			outputAddress := c.Program[i+3]
@@ -201,6 +206,8 @@ func (c *Computer) Run() {
 				input1Value = c.Program[i+1]
 			case PositionMode:
 				input1Value = c.Program[c.Program[i+1]]
+			case RelativeMode:
+				input1Value = c.Program[c.RelativeBase+c.Program[i+1]]
 			}
 
 			switch ins.ParameterModes[1] {
@@ -208,6 +215,8 @@ func (c *Computer) Run() {
 				input2Value = c.Program[i+2]
 			case PositionMode:
 				input2Value = c.Program[c.Program[i+2]]
+			case RelativeMode:
+				input2Value = c.Program[c.RelativeBase+c.Program[i+2]]
 			}
 
 			outputAddress := c.Program[i+3]
@@ -223,6 +232,8 @@ func (c *Computer) Run() {
 			switch ins.ParameterModes[0] {
 			case PositionMode: // zeroval
 				outputAddress = c.Program[i+1]
+			case RelativeMode:
+				outputAddress = c.RelativeBase + c.Program[i+1]
 			}
 
 			if val, ok := <-c.input; ok {
@@ -242,6 +253,8 @@ func (c *Computer) Run() {
 				outputValue = c.Program[i+1]
 			case PositionMode:
 				outputValue = c.Program[c.Program[i+1]]
+			case RelativeMode:
+				outputValue = c.Program[c.RelativeBase+c.Program[i+1]]
 			}
 
 			c.output <- outputValue
@@ -259,6 +272,8 @@ func (c *Computer) Run() {
 				flag = c.Program[i+1]
 			case PositionMode:
 				flag = c.Program[c.Program[i+1]]
+			case RelativeMode:
+				flag = c.Program[c.RelativeBase+c.Program[i+1]]
 			}
 
 			switch ins.ParameterModes[1] {
@@ -266,6 +281,8 @@ func (c *Computer) Run() {
 				newPointer = c.Program[i+2]
 			case PositionMode:
 				newPointer = c.Program[c.Program[i+2]]
+			case RelativeMode:
+				newPointer = c.Program[c.RelativeBase+c.Program[i+2]]
 			}
 
 			if flag != 0 {
@@ -286,6 +303,8 @@ func (c *Computer) Run() {
 				flag = c.Program[i+1]
 			case PositionMode:
 				flag = c.Program[c.Program[i+1]]
+			case RelativeMode:
+				flag = c.Program[c.RelativeBase+c.Program[i+1]]
 			}
 
 			switch ins.ParameterModes[1] {
@@ -293,6 +312,8 @@ func (c *Computer) Run() {
 				newPointer = c.Program[i+2]
 			case PositionMode:
 				newPointer = c.Program[c.Program[i+2]]
+			case RelativeMode:
+				newPointer = c.Program[c.RelativeBase+c.Program[i+2]]
 			}
 
 			if flag == 0 {
@@ -315,6 +336,8 @@ func (c *Computer) Run() {
 				input1Value = c.Program[i+1]
 			case PositionMode:
 				input1Value = c.Program[c.Program[i+1]]
+			case RelativeMode:
+				input1Value = c.Program[c.RelativeBase+c.Program[i+1]]
 			}
 
 			switch ins.ParameterModes[1] {
@@ -322,6 +345,8 @@ func (c *Computer) Run() {
 				input2Value = c.Program[i+2]
 			case PositionMode:
 				input2Value = c.Program[c.Program[i+2]]
+			case RelativeMode:
+				input2Value = c.Program[c.RelativeBase+c.Program[i+2]]
 			}
 
 			if input1Value < input2Value {
@@ -345,6 +370,8 @@ func (c *Computer) Run() {
 				input1Value = c.Program[i+1]
 			case PositionMode:
 				input1Value = c.Program[c.Program[i+1]]
+			case RelativeMode:
+				input1Value = c.Program[c.RelativeBase+c.Program[i+1]]
 			}
 
 			switch ins.ParameterModes[1] {
@@ -352,6 +379,8 @@ func (c *Computer) Run() {
 				input2Value = c.Program[i+2]
 			case PositionMode:
 				input2Value = c.Program[c.Program[i+2]]
+			case RelativeMode:
+				input2Value = c.Program[c.RelativeBase+c.Program[i+2]]
 			}
 
 			if input1Value == input2Value {
@@ -368,6 +397,8 @@ func (c *Computer) Run() {
 				inputValue = c.Program[i+1]
 			case PositionMode:
 				inputValue = c.Program[c.Program[i+1]]
+			case RelativeMode:
+				inputValue = c.Program[c.RelativeBase+c.Program[i+1]]
 			}
 
 			c.RelativeBase = c.RelativeBase + inputValue
