@@ -34,6 +34,7 @@ const (
 	JumpIfFalse
 	LessThan
 	Equals
+	RelativeBaseOffset
 	Terminate OpCode = 99
 )
 
@@ -56,6 +57,7 @@ func (op OpCode) String() string {
 		"JumpIfFalse",
 		"LessThan",
 		"Equals",
+		"RelativeBaseOffset",
 	}
 
 	return names[op]
@@ -99,6 +101,8 @@ func NewInstruction(i int) *Instruction {
 		parms = 2
 	case LessThan, Equals:
 		parms = 3
+	case RelativeBaseOffset:
+		parms = 1
 	default:
 		parms = 0
 	}
@@ -139,6 +143,7 @@ type Computer struct {
 	InstructionPointer int
 	output             chan int
 	Name               string
+	RelativeBase       int
 }
 
 func NewComputer(input chan int, program []int, output chan int) *Computer {
@@ -355,6 +360,18 @@ func (c *Computer) Run() {
 				c.Program[outputAddress] = 0
 			}
 			i = i + 4
+		case RelativeBaseOffset:
+			var inputValue int
+
+			switch ins.ParameterModes[0] {
+			case ImmediateMode:
+				inputValue = c.Program[i+1]
+			case PositionMode:
+				inputValue = c.Program[c.Program[i+1]]
+			}
+
+			c.RelativeBase = c.RelativeBase + inputValue
+			i = i + 2
 		default:
 			i = i + 1
 		}

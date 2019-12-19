@@ -506,6 +506,44 @@ func TestLargeMemory(t *testing.T) {
 		})
 	}
 }
+
+func TestRelativeBaseOffset(t *testing.T) {
+	testCases := []struct {
+		testName         string
+		program          Program
+		wantRelativeBase int
+	}{
+		{"zeroval base offset", Program{99}, 0},
+		{"position-mode once", Program{9, 0, 99}, 9},
+		{"position-mode twice", Program{9, 0, 9, 4, 99}, 108},
+		{"immediate-mode once", Program{109, 50, 99}, 50},
+		{"immediate-mode twice", Program{109, 60, 109, -15, 99}, 45},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.testName, func(t *testing.T) {
+			in := make(chan int)
+			out := make(chan int)
+			c := NewComputer(in, tc.program, out)
+			go c.Run()
+
+			var got []int
+			for {
+				val, ok := <-out
+				if ok == false {
+					break
+				} else {
+					got = append(got, val)
+				}
+			}
+
+			if diff := cmp.Diff(tc.wantRelativeBase, c.RelativeBase); diff != "" {
+				t.Errorf("RelativeBase difference, -want +got:\n%s", diff)
+			}
+		})
+	}
+}
+
 func TestLargeNumber(t *testing.T) {
 	testCases := []struct {
 		program Program
