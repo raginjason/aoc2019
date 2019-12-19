@@ -5,6 +5,7 @@ import (
 	"github.com/raginjason/aoc2019/day2"
 	"github.com/raginjason/aoc2019/day5"
 	"github.com/raginjason/aoc2019/day7"
+	"github.com/raginjason/aoc2019/day9"
 )
 
 func main() {
@@ -37,4 +38,9 @@ func main() {
 	fmt.Printf("Day 7 part 1 answer: %d\n", day7pt1)
 	day7pt2 := day7.Part2()
 	fmt.Printf("Day 7 part 2 answer: %d\n", day7pt2)
+
+	day9pt1 := day9.Part1()
+	fmt.Printf("Day 9 part 1 answer: %d\n", day9pt1)
+	day9pt2 := day9.Part2()
+	fmt.Printf("Day 9 part 2 answer: %d\n", day9pt2)
 }
