@@ -176,13 +176,10 @@ func TestInput(t *testing.T) {
 				in <- v
 			}
 
-			var got []int
 			for {
-				val, ok := <-out
+				_, ok := <-out
 				if ok == false {
 					break
-				} else {
-					got = append(got, val)
 				}
 			}
 
@@ -533,13 +530,10 @@ func TestRelativeBaseOffset(t *testing.T) {
 			c := NewComputer(in, tc.program, out)
 			go c.Run()
 
-			var got []int
 			for {
-				val, ok := <-out
+				_, ok := <-out
 				if ok == false {
 					break
-				} else {
-					got = append(got, val)
 				}
 			}
 
