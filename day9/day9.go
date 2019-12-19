@@ -37,6 +37,26 @@ func Part1() int {
 			output = append(output, val)
 		}
 	}
-	log.Printf("output: %v", output)
+	return output[0]
+}
+
+func Part2() int {
+	program := scanDay9File()
+
+	in := make(chan int)
+	out := make(chan int)
+	c := intcode.NewComputer(in, program, out)
+	go c.Run()
+	in <- 2
+
+	var output []int
+	for {
+		val, ok := <-out
+		if !ok {
+			break
+		} else {
+			output = append(output, val)
+		}
+	}
 	return output[0]
 }
