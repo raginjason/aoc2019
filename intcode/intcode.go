@@ -175,6 +175,7 @@ func (c *Computer) Run() {
 		case Add:
 			var input1Value int
 			var input2Value int
+			var outputAddress int
 
 			switch ins.ParameterModes[0] {
 			case ImmediateMode:
@@ -194,12 +195,20 @@ func (c *Computer) Run() {
 				input2Value = c.Program[c.RelativeBase+c.Program[i+2]]
 			}
 
-			outputAddress := c.Program[i+3]
+			// Parameters that an instruction writes to will never be in immediate mode.
+			switch ins.ParameterModes[2] {
+			case PositionMode:
+				outputAddress = c.Program[i+3]
+			case RelativeMode:
+				outputAddress = c.RelativeBase + c.Program[i+3]
+			}
+
 			c.Program[outputAddress] = input1Value + input2Value
 			i = i + 4
 		case Multiply:
 			var input1Value int
 			var input2Value int
+			var outputAddress int
 
 			switch ins.ParameterModes[0] {
 			case ImmediateMode:
@@ -219,7 +228,14 @@ func (c *Computer) Run() {
 				input2Value = c.Program[c.RelativeBase+c.Program[i+2]]
 			}
 
-			outputAddress := c.Program[i+3]
+			// Parameters that an instruction writes to will never be in immediate mode.
+			switch ins.ParameterModes[2] {
+			case PositionMode:
+				outputAddress = c.Program[i+3]
+			case RelativeMode:
+				outputAddress = c.RelativeBase + c.Program[i+3]
+			}
+
 			c.Program[outputAddress] = input1Value * input2Value
 			i = i + 4
 		case Input:
@@ -329,7 +345,7 @@ func (c *Computer) Run() {
 
 			var input1Value int
 			var input2Value int
-			outputAddress := c.Program[i+3]
+			var outputAddress int
 
 			switch ins.ParameterModes[0] {
 			case ImmediateMode:
@@ -347,6 +363,14 @@ func (c *Computer) Run() {
 				input2Value = c.Program[c.Program[i+2]]
 			case RelativeMode:
 				input2Value = c.Program[c.RelativeBase+c.Program[i+2]]
+			}
+
+			// Parameters that an instruction writes to will never be in immediate mode.
+			switch ins.ParameterModes[2] {
+			case PositionMode:
+				outputAddress = c.Program[i+3]
+			case RelativeMode:
+				outputAddress = c.RelativeBase + c.Program[i+3]
 			}
 
 			if input1Value < input2Value {
@@ -363,7 +387,7 @@ func (c *Computer) Run() {
 
 			var input1Value int
 			var input2Value int
-			outputAddress := c.Program[i+3]
+			var outputAddress int
 
 			switch ins.ParameterModes[0] {
 			case ImmediateMode:
@@ -381,6 +405,14 @@ func (c *Computer) Run() {
 				input2Value = c.Program[c.Program[i+2]]
 			case RelativeMode:
 				input2Value = c.Program[c.RelativeBase+c.Program[i+2]]
+			}
+
+			// Parameters that an instruction writes to will never be in immediate mode.
+			switch ins.ParameterModes[2] {
+			case PositionMode:
+				outputAddress = c.Program[i+3]
+			case RelativeMode:
+				outputAddress = c.RelativeBase + c.Program[i+3]
 			}
 
 			if input1Value == input2Value {

@@ -22,7 +22,7 @@ func TestAddition(t *testing.T) {
 		{"relative-mode 0 add C", Program{201, 0, 0, 0, 99}, Program{402, 0, 0, 0, 99}, 5},
 		{"relative-mode 2 add A", Program{109, 2, 201, 0, 0, 0, 99}, Program{310, 2, 201, 0, 0, 0, 99}, 7},
 		{"relative-mode 2 add B", Program{109, 2, 2201, 0, 0, 0, 99}, Program{4402, 2, 2201, 0, 0, 0, 99}, 7},
-		{"relative-mode 2 add C", Program{109, 2, 22201, 0, 0, 0, 99}, Program{44402, 2, 22201, 0, 0, 0, 99}, 7},
+		{"relative-mode 2 add C", Program{109, 2, 22201, 0, 0, 0, 99}, Program{109, 2, 44402, 0, 0, 0, 99}, 7},
 		{"store add post terminate", Program{1, 4, 4, 5, 99, 0}, Program{1, 4, 4, 5, 99, 198}, 5},
 	}
 
